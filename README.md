@@ -1,2 +1,2 @@
 # lterwg-som-shiny
-Shiny app of the LTER SOM working group
+Shiny app for the LTER SOM working group
