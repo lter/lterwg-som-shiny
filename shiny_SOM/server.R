@@ -1,0 +1,107 @@
+# Shiny app for SOM data filtering, plots, and data download
+# Created Aug 30, 2019
+# Derek Pierson, piersond@oregonstate.edu
+
+#Load libraries
+library(shiny)
+library(DT)
+library(dplyr)
+library(ggplot2)
+
+### DO WE NEED THIS "setwd" LINE ON THE SERVER COPY?
+#set working drive to folder where this script is saved
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+#load tarball rds
+tarball <- readRDS("somCompositeData_2019-08-27.rds")
+
+###NEED TO ADD THe SCRIPT TO REPO
+#load control only function
+#source() --> make sure it only loads the function
+
+### BRING IN BETTER VAR NAMES, create lookup table csv from keykey to convert colummn names to full names
+
+#Create UI option vectors
+exp.types <- unique(tarball$tx_L1_level) #How to remove unwanted otpions? e.g. NA, L1
+networks <- unique(tarball$network)
+
+#Create plot variable options vector
+som.numerics <- colnames(as.data.frame(select_if(tarball, is.numeric)))
+som.strings <- colnames(as.data.frame(select_if(tarball, is.character)))
+
+
+### SERVER ###
+server <- function(input,output){
+
+  
+  #reactive function to create data table
+  data.tbl <- reactive({
+    
+    df <- NULL
+    
+    #Network filter
+    if(input$network != "ALL") {
+      df <- tarball %>% filter(network == input$network)
+    } else {
+      df <- tarball
+    }
+    
+    #Control only filter
+    if(input$ctl != "ALL") {
+      df <- df[1,1] #Make this use ctl_only ftn
+    }
+
+    #Time series filter
+    if(input$timeseries != "ALL") {
+      df <- df %>% filter(time_series == "YES")
+    }
+    
+    #Experiment filter
+    if(input$exptype != "ALL") {
+      df <- df %>% filter(tx_L1_level == input$exptype) ### NEEDS TO FILTER ACROSS THE OTHER LEVELS
+    }
+    
+    ## Return the filtered dataframe
+    return(df)
+    
+  })
+  
+  #Create ggplot using filtered data from data.tbl() above
+  output$dataPlot <- renderPlot({
+    ggplot(data.tbl(), aes_string(x=input$plot.x, y=input$plot.y)) + geom_point() + 
+      theme(axis.text.x = element_text(angle = 90))
+    #...plot color and symbols
+    #...change plot size
+    #...dynamic title
+    #...legend
+    
+  })
+  
+  #Create user filtered DataTable pulling dataframe from data.tbl() above  
+  output$tbl = renderDT(data.tbl(), 
+                        options = list(lengthChange = TRUE, 
+                                       pageLength = 10)
+  )
+  
+  #Downloadable csv of selected dataset ----
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste0("Filtered_SOM_data.csv")
+    },
+    content = function(file) {
+      write.csv(data.tbl(), file, row.names = FALSE)
+    }
+  )
+}
+
+
+#Run the app
+#shinyApp(ui=ui,server=server)
+
+
+
+
+### Questions for improvement of app:
+# DataTable filler for blank values?
+# Prevent dataTable rows from expanding?
+# Plotly > ggplot?
