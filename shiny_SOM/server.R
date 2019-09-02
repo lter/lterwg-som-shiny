@@ -15,7 +15,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 #load tarball rds
 tarball <- readRDS("somCompositeData_2019-08-27.rds")
 
-###NEED TO ADD THe SCRIPT TO REPO
+###NEED TO ADD THE CONTROL ONLY FTN SCRIPT TO REPO
 #load control only function
 #source() --> make sure it only loads the function
 
@@ -80,7 +80,8 @@ server <- function(input,output){
   #Create user filtered DataTable pulling dataframe from data.tbl() above  
   output$tbl = renderDT(data.tbl(), 
                         options = list(lengthChange = TRUE, 
-                                       pageLength = 10)
+                                       pageLength = 10),
+                        class = 'white-space: nowrap'
   )
   
   #Downloadable csv of selected dataset ----

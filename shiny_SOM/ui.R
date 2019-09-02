@@ -32,28 +32,45 @@ som.strings <- colnames(as.data.frame(select_if(tarball, is.character)))
 ### UI ###
 ui <- fluidPage(
   
-      #NEED TITLE
-      #CAN WE space the drop down filters not just top to bottom but left to right?      
-  
-        #Filter options for...
-        selectInput('network', 'Network:', choices = c("ALL",networks),
-                            selected = "ALL", multiple = T),  #HOW TO start with empty box instead of using "ALL"
-        selectInput('ctl', 'Control only:', choices = c("ALL","Control Data Only"),
-                    selected = "ALL"),
-        selectInput('timeseries', 'Time series:', choices = c("ALL","Time Series Data Only"),
-                    selected = "ALL"),
-        selectInput('exptype', 'Experiment type:', choices = c("ALL", exp.types), 
-                    selected = "ALL"),
+      #Page title row
+      fluidRow(
+        column(12,
+               offset = 0,
+               titlePanel(title = "LTER SOM Database", windowTitle = "LTER SOM Database"))
+      ),
+      
+      #Separator
+      hr(),
+      
+      #Options row
+      fluidRow(
+        column(3,
+               wellPanel(
+                 #Filter options for...
+                 selectInput('network', 'Network:', choices = c("ALL",networks), selected = "ALL", multiple = T),  #HOW TO start with empty box instead of using "ALL"
+                 selectInput('exptype', 'Experiment type:', choices = c("ALL", exp.types), selected = "ALL")
+                 )
+        ),
+        column(3,
+               wellPanel(
+                 #Filter options for...
+                 selectInput('ctl', 'Control only:', choices = c("ALL","Control Data Only"), selected = "ALL"),
+                 selectInput('timeseries', 'Time series:', choices = c("ALL","Time Series Data Only"), selected = "ALL")
+               )
+        )
+      ),
         
-        #ADD filter by soil depth... maybe as a slider?
-        #ADD filter by lat-long...
+                #ADD filter by soil depth... maybe as a slider?
+                #ADD filter by lat-long...
         
-      #NEED UI SEPARATOR HERE
+      #Separator
+      hr(),
         
         #Download button
         downloadButton("downloadData", "Download this data!"),
         
       #Separator
+      hr(),
         
         #Variable options for plot
         selectInput('plot.x', 'Plot X-Axis:', choices = som.numerics, #Make the choices pull from tarball unique
@@ -66,12 +83,17 @@ ui <- fluidPage(
       # ADD color options for plot...
       # ADD symbol options for plot...
 
+      #Separator
+      hr(),
+      
         #Plot object
         plotOutput("dataPlot"), 
         
-      #Separator  
+      #Separator
+      hr(),
         
-        #DataTable object    
+        #DataTable object
+        h2("Data Table"),
         DTOutput('tbl')
       )
 
