@@ -7,6 +7,9 @@ library(shiny)
 library(DT)
 library(dplyr)
 library(ggplot2)
+library(leaflet)
+library(viridis)
+
 
 ### DO WE NEED THIS "setwd" LINE ON THE SERVER COPY?
 #set working drive to folder where this script is saved
@@ -15,11 +18,10 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 #load tarball rds
 tarball <- readRDS("somCompositeData_2019-08-27.rds")
 colnames(tarball)
+
 ###NEED TO ADD THE CONTROL ONLY FTN SCRIPT TO REPO
 #load control only function
 #source() --> make sure it only loads the function
-
-### BRING IN BETTER VAR NAMES, create lookup table csv from keykey to convert colummn names to full names
 
 #Create UI option vectors
 exp.types <-
@@ -99,11 +101,78 @@ server <- function(input, output) {
     
   })
   
-  #Create map df
   
+### BEGIN MAP OBJECTS ###
+  #Create map dataframe with lat longs and other useful information
+  map_pts <- reactive({
+    
+      #Select data columns and remove NA
+      df <-
+        data.tbl() %>% select(
+          "google_dir",
+          "location_name",
+          "site_code",
+          "lat",
+          "long",
+        input$map_color) %>% 
+        na.omit() %>% 
+        mutate(lat = as.numeric(lat)) %>% 
+        mutate(long = as.numeric(long)) %>% 
+        distinct() 
+
+    return(df)
+   })
+  
+  
+  #Set column to use for map color
+  map_colorby <- reactive({
+    df <- map_pts()
+    return(unname(unlist(df[,input$map_color])))
+  })
+  
+  #Color palette for map
+  map_pal <- reactive({
+    map_data <- map_pts()
+    
+    if(input$map_color %in% som.numerics) {
+      pal <- colorNumeric(palette = viridis(100), domain = map_data[,input$map_color])
+    } else {
+      pal <- colorFactor(palette = viridis(12), domain = map_data[,input$map_color])
+    }
+    
+    return(pal)
+  })
+  
+  #Use input to change base layer
+  map_base <- reactive({
+    string <- NULL
+    if(input$map_base_lyr == "Topographic"){string <- "Esri.WorldStreetMap"}
+    if(input$map_base_lyr == "White"){string <- "Stamen.TonerLite"}
+    if(input$map_base_lyr == "Relief"){string <- "Esri.WorldPhysical"}
+    return(string)
+  })
   
   #Create map object
+  output$som_map <- renderLeaflet({
+    leaflet(map_pts(), options = leafletOptions(minZoom = 1, maxZoom = 11)) %>%
+      addProviderTiles(map_base(), options = providerTileOptions(noWrap = TRUE)) %>%
+      # setMaxBounds(lng1 = -180, 
+      #              lat1 = -90, 
+      #              lng2 = 180, 
+      #              lat2 = 90) %>%
+      addCircleMarkers(lng = ~long, 
+                       lat = ~lat, 
+                       radius = 5, 
+                       color = ~map_pal()(map_colorby()),
+                       stroke=FALSE,
+                       opacity = 0.8#,
+                       #popup = ~popup_info
+                       ) %>%
+      addLegend("bottomright", pal = map_pal(), values = map_colorby(), labels = "labels", title = "Legend")
+  })
   
+
+### BEGIN DataTable Objects ###
   
   #Create user filtered DataTable pulling dataframe from data.tbl() above
   output$tbl = renderDT(
@@ -125,13 +194,3 @@ server <- function(input, output) {
 }
 
 
-#Run the app
-#shinyApp(ui=ui,server=server)
-
-
-
-
-### Questions for improvement of app:
-# DataTable filler for blank values?
-# Prevent dataTable rows from expanding?
-# Plotly > ggplot?
