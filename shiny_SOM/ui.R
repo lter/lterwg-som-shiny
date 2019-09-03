@@ -16,6 +16,8 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 #load tarball rds
 tarball <- readRDS("somCompositeData_2019-08-27.rds")
 
+unique(tarball$network)
+
 ### BRING IN BETTER VAR NAMES, create lookup table csv from keykey to convert colummn names to full names
 
 #Create UI option vectors
@@ -30,7 +32,7 @@ som.strings <-
   colnames(as.data.frame(select_if(tarball, is.character)))
 
 ### UI ###
-ui <- fluidPage(
+ui <- fluidPage(theme = "bootstrap.css",
   fluidRow(column(
     12,
     offset = 0,

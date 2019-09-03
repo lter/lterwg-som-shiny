@@ -17,23 +17,18 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
 #load tarball rds
 tarball <- readRDS("somCompositeData_2019-08-27.rds")
-colnames(tarball)
+#colnames(tarball)
 
-###NEED TO ADD THE CONTROL ONLY FTN SCRIPT TO REPO
 #load control only function
-#source() --> make sure it only loads the function
+source('ext_ftns/control_filter.R', chdir=T)
 
 #Create UI option vectors
-exp.types <-
-  unique(tarball$tx_L1_level) #How to remove unwanted otpions? e.g. NA, L1
+exp.types <- unique(tarball$tx_L1_level) #How to remove unwanted otpions? e.g. NA, L1
 networks <- unique(tarball$network)
 
 #Create plot variable options vector
-som.numerics <-
-  colnames(as.data.frame(select_if(tarball, is.numeric)))
-som.strings <-
-  colnames(as.data.frame(select_if(tarball, is.character)))
-
+som.numerics <- colnames(as.data.frame(select_if(tarball, is.numeric)))
+som.strings <- colnames(as.data.frame(select_if(tarball, is.character)))
 
 ### SERVER ###
 server <- function(input, output) {
@@ -50,18 +45,33 @@ server <- function(input, output) {
     
     #Control only filter
     if (input$ctl != "ALL") {
-      df <- df[1, 1] #Make this use ctl_only ftn
+      dsets <- na.omit(as.character(unique(df$google_dir)))
+      df <- do.call(rbind, lapply(dsets, ctl_filter, df))
     }
     
     #Time series filter
-    if (input$timeseries != "ALL") {
+    if (input$timeseries == "only_ts") {
       df <- df %>% filter(time_series == "YES")
+    }
+    if (input$timeseries == "no_ts") {
+      df <- df %>% filter(time_series == "NO")
     }
     
     #Experiment filter
     if (input$exptype != "ALL") {
-      df <-
-        df %>% filter(tx_L1_level == input$exptype) ### NEEDS TO FILTER ACROSS THE OTHER LEVELS
+      df <- df %>% filter(tx_L1_level == input$exptype) ### NEEDS TO FILTER ACROSS THE OTHER LEVELS
+    }
+    
+    #Top depth filter
+    if (input$top_d != "0") {
+      df <- df %>% mutate(layer_top = as.numeric(layer_top)) %>% 
+        filter(layer_top >= as.numeric(input$top_d)) 
+    }
+    
+    #Bottom depth filter
+    if (input$bot_d != "300") {
+      df <- df %>% mutate(layer_bot = as.numeric(layer_bot)) %>% 
+            filter(layer_bot <= as.numeric(input$bot_d)) 
     }
     
     ## Return the filtered dataframe
@@ -83,7 +93,7 @@ server <- function(input, output) {
         "long",
         input$plot.x,
         input$plot.y
-      ) %>% na.omit()
+      ) %>% na.omit(input$plot.x) %>% na.omit(input$plot.y)
     
     #Return two column df
     return(df)
@@ -107,19 +117,18 @@ server <- function(input, output) {
   map_pts <- reactive({
     
       #Select data columns and remove NA
-      df <-
-        data.tbl() %>% select(
+      df <- data.tbl() %>% select(
           "google_dir",
           "location_name",
           "site_code",
           "lat",
           "long",
         input$map_color) %>% 
-        na.omit() %>% 
         mutate(lat = as.numeric(lat)) %>% 
-        mutate(long = as.numeric(long)) %>% 
-        distinct() 
+        mutate(long = as.numeric(long)) 
 
+      df <- df[!duplicated(df[,c('lat','long')]),]
+      
     return(df)
    })
   
@@ -165,13 +174,16 @@ server <- function(input, output) {
                        radius = 5, 
                        color = ~map_pal()(map_colorby()),
                        stroke=FALSE,
-                       opacity = 0.8#,
-                       #popup = ~popup_info
+                       fillOpacity = 0.8,
+                       popup = ~paste("Google directory:", google_dir, "<br>",
+                                      "Location name:", location_name, "<br>",
+                                      "Latitude:", lat, "<br>",
+                                      "Longitude:", long, "<br>")
                        ) %>%
-      addLegend("bottomright", pal = map_pal(), values = map_colorby(), labels = "labels", title = "Legend")
+      addLegend("bottomright", pal = map_pal(), values = map_colorby(), labels = "labels", title = "Legend") %>%
+      addScaleBar(position = "topright", options = scaleBarOptions(maxWidth = 100, metric = TRUE))
   })
   
-
 ### BEGIN DataTable Objects ###
   
   #Create user filtered DataTable pulling dataframe from data.tbl() above
