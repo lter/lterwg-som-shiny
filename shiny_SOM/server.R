@@ -75,8 +75,10 @@ server <- function(input, output) {
         "lat",
         "long",
         input$plot.x,
-        input$plot.y
-      ) %>% na.omit(input$plot.x) %>% na.omit(input$plot.y)
+        input$plot.y,
+        {if(input$plot.color != "None")input$plot.color},
+        {if(input$plot.symbol != "None")input$plot.symbol}
+      ) %>% na.omit(input$plot.x, input$plot.y)
     
     #Return two column df
     return(df)
@@ -85,13 +87,33 @@ server <- function(input, output) {
   
   #Create ggplot using filtered data from data.tbl() above
   output$dataPlot <- renderPlot({
-    ggplot(plot.df(), aes_string(x = input$plot.x, y = input$plot.y)) + geom_point() +
-      theme(axis.text.x = element_text(angle = 90))
-    #...plot color and symbols
-    #...change plot size
-    #...dynamic title
-    #...legend
-    
+    ggplot() +
+  #Point plot
+    {if(input$plot.type == "point")
+      geom_point(data=plot.df(), aes_string(x = input$plot.x, y = input$plot.y))} +
+    {if(input$plot.type == "point")
+      geom_point(shape = 19, size = 3, alpha = 0.8, stroke = 0.5)} +
+    {if(input$plot.symbol != "None" & input$plot.type == "point")
+      geom_point(data=plot.df(),aes_string(x = input$plot.x, y = input$plot.y, shape=input$plot.symbol))} +
+    {if(input$plot.color != "None" & input$plot.type == "point")
+      geom_point(data=plot.df(),aes_string(x = input$plot.x, y = input$plot.y, color=input$plot.color))} +
+  #Box plot
+    {if(input$plot.type == "boxplot")
+      geom_boxplot(data=plot.df(), aes_string(x = input$plot.x, y = input$plot.y))} +   
+    {if(input$plot.color != "None" & input$plot.type == "boxplot")
+      geom_boxplot(data=plot.df(), aes_string(x = input$plot.x, y = input$plot.y, color=input$plot.color))} +
+    {if(input$plot.type == "boxplot")
+      stat_summary(fun.y=mean, colour="darkred", geom="point", shape=18, size=3, show.legend = FALSE)} +
+  #Histogram
+    {if(input$plot.type == "histogram")
+      geom_histogram(data=plot.df(), aes_string(x = input$plot.x), stat="count")} + 
+    {if(input$plot.color != "None" & input$plot.type == "histogram")
+      geom_histogram(data=plot.df(), aes_string(x = input$plot.x, fill=input$plot.color), stat="count")} +
+  #Styling
+    theme(axis.text.x = element_text(angle = 90))
+    #...export plot
+    #...dynamic titles
+    #...better legend
   })
   
   

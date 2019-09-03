@@ -6,15 +6,12 @@
 ### BRING IN BETTER VAR NAMES, create lookup table csv from keykey to convert colummn names to full names
 
 #Create UI option vectors
-exp.types <-
-  unique(tarball$tx_L1_level) #How to remove unwanted otpions? e.g. NA, L1
+exp.types <- unique(tarball$tx_L1_level) #How to remove unwanted otpions? e.g. NA, L1
 networks <- unique(tarball$network)
 
 #Create plot variable options vector
-som.numerics <-
-  colnames(as.data.frame(select_if(tarball, is.numeric)))
-som.strings <-
-  colnames(as.data.frame(select_if(tarball, is.character)))
+som.numerics <- sort(colnames(as.data.frame(select_if(tarball, is.numeric))))
+som.strings <- sort(colnames(as.data.frame(select_if(tarball, is.character))))
 
 ### UI ###
 ui <- fluidPage(theme = "bootstrap.css",
@@ -91,35 +88,35 @@ ui <- fluidPage(theme = "bootstrap.css",
         selectInput(
           'plot.x',
           'Plot X-Axis:',
-          choices = som.numerics,
-          selected = "lyr_soc"
+          choices = c(som.numerics, som.strings),
+          selected = "google_dir"
         ),
         selectInput(
           'plot.y',
           'Plot Y-Axis:',
           choices = c(som.numerics, som.strings),
-          selected = "google_dir"
+          selected = "lyr_soc"
         ),
         hr(),
         h3("Plot options"),
         selectInput(
           'plot.type',
           'Type:',
-          choices = c("point", "line", "histogram", "boxplot"),
+          choices = c("point", "boxplot", "histogram"),
           selected = "point"
         ),
         selectInput(
           'plot.color',
           'Color:',
-          choices = c(som.numerics, som.strings),
-          selected = "network"
-        )#,
-        # selectInput(
-        #   'plot.symbol:',
-        #   'Symbolize:',
-        #   choices = c(som.numerics, som.strings),
-        #   selected = "google_dir"
-        # )
+          choices = c("None", som.numerics, som.strings),
+          selected = "None"
+        ),
+        selectInput(
+          'plot.symbol',
+          'Symbolize:',
+          choices = c("None", "network", "site_code"),
+          selected = "None"
+        )
       ),
       conditionalPanel(
         condition = "input.conditionedPanels==2",
