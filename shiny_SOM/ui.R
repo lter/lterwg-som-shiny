@@ -2,21 +2,6 @@
 # Created Aug 30, 2019
 # Derek Pierson, piersond@oregonstate.edu
 
-#Load libraries
-library(shiny)
-library(DT)
-library(dplyr)
-library(ggplot2)
-library(leaflet)
-
-### DO WE NEED THIS "setwd" LINE ON THE SERVER COPY?
-#set working drive to folder where this script is saved
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-
-#load tarball rds
-tarball <- readRDS("somCompositeData_2019-08-27.rds")
-
-unique(tarball$network)
 
 ### BRING IN BETTER VAR NAMES, create lookup table csv from keykey to convert colummn names to full names
 
@@ -128,13 +113,13 @@ ui <- fluidPage(theme = "bootstrap.css",
           'Color:',
           choices = c(som.numerics, som.strings),
           selected = "network"
-        ),
-        selectInput(
-          'plot.symbol:',
-          'Symbolize:',
-          choices = c(som.numerics, som.strings),
-          selected = "google_dir"
-        )
+        )#,
+        # selectInput(
+        #   'plot.symbol:',
+        #   'Symbolize:',
+        #   choices = c(som.numerics, som.strings),
+        #   selected = "google_dir"
+        # )
       ),
       conditionalPanel(
         condition = "input.conditionedPanels==2",

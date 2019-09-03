@@ -2,25 +2,8 @@
 # Created Aug 30, 2019
 # Derek Pierson, piersond@oregonstate.edu
 
-#Load libraries
-library(shiny)
-library(DT)
-library(dplyr)
-library(ggplot2)
-library(leaflet)
-library(viridis)
 
 
-### DO WE NEED THIS "setwd" LINE ON THE SERVER COPY?
-#set working drive to folder where this script is saved
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-
-#load tarball rds
-tarball <- readRDS("somCompositeData_2019-08-27.rds")
-#colnames(tarball)
-
-#load control only function
-source('ext_ftns/control_filter.R', chdir=T)
 
 #Create UI option vectors
 exp.types <- unique(tarball$tx_L1_level) #How to remove unwanted otpions? e.g. NA, L1
