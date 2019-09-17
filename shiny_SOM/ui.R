@@ -177,7 +177,20 @@ ui <- fluidPage(theme = "bootstrap.css",
                                       DTOutput('site_sumry_tbl')),
                              tabPanel("By Analyte")
                            )),
-                  tabPanel("Panel 3",
-                           tabPanel("Panel 1.1"),
-                           tabPanel("Panel 1.2"))
+                  useShinyjs(),
+                  tabPanel("Comments",
+                           h1("Give us feedback on the app!"),
+                           textInput("issueTitle", label = "Title"),
+                           textAreaInput("issueBody", label = "Body", height = '300px'),
+                           textInput("name", label = "Name:"),
+                           textInput("email", label = "Email:"),
+                           actionButton("issueButton", label = "Submit"),
+                           actionButton("clearIssue", label = "Clear All Fields"),
+                           shinyjs::hidden(p(id = 'allIssues', 'Please fill out all values!',
+                                             style = 'color: gray')),
+                           shinyjs::hidden(p(id = "issueSuccess", "Issue successfully submitted!",
+                                             style = "color: green"))
+                           
+                           )
+                  
                 ))
