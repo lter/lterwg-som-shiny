@@ -199,6 +199,17 @@ server <- function(input, output) {
     class = 'white-space: nowrap'
   )
   
+
+  #Site analyte summary table
+  output$site_sumry_tbl = renderDT(
+    data.tbl(),
+    options = list(lengthChange = TRUE,
+                   pageLength = 200),
+    class = 'white-space: nowrap'
+  )
+  
+  
+  
   #Downloadable csv of selected dataset ----
   output$downloadData <- downloadHandler(
     filename = function() {
