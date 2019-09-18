@@ -117,7 +117,7 @@ server <- function(input, output, session) {
   })
   
   
-### BEGIN MAP OBJECTS ###
+###MAP Object 
   #Create map dataframe with lat longs and other useful information
   map_pts <- reactive({
     
@@ -189,9 +189,9 @@ server <- function(input, output, session) {
       addScaleBar(position = "topright", options = scaleBarOptions(maxWidth = 100, metric = TRUE))
   })
   
-### BEGIN DataTable Objects ###
+### DataTable Objects 
   
-  #Create user filtered DataTable pulling dataframe from data.tbl() above
+  ## Create user filtered DataTable pulling dataframe from data.tbl() above
   output$tbl = renderDT(
     data.tbl(),
     options = list(lengthChange = TRUE,
@@ -200,17 +200,79 @@ server <- function(input, output, session) {
   )
   
 
-  #Site analyte summary table
-  output$site_sumry_tbl = renderDT(
-    data.tbl(),
-    options = list(lengthChange = TRUE,
-                   pageLength = 200),
-    class = 'white-space: nowrap'
-  )
+  ## Tarball summary tables
+    #Sites with var1, var1, var,3
+    var_n.bysite <- reactive({
+
+      if(paste0(input$var2_n,input$var3_n,input$var4_n) == "") {
+        df <- tarball %>% group_by(site_code, network, location_name) %>%
+          summarise(var1_n = sum(!is.na(!!sym(input$var1_n)))) %>%
+          setNames(c("Site Code", "Network", "Location Name", input$var1_n))
+      } else if (input$var2_n != "" & paste0(input$var3_n,input$var4_n) == "") {
+        df <- tarball %>% group_by(site_code, network, location_name) %>%
+          summarise(var1_n = sum(!is.na(!!sym(input$var1_n))),
+                    var2_n = sum(!is.na(!!sym(input$var2_n)))) %>%
+          setNames(c("Site Code", "Network", "Location Name", input$var1_n, input$var2_n))
+      } else if (input$var2_n != "" & input$var2_n != "" & input$var4_n == "") {
+        df <- tarball %>% group_by(site_code, network, location_name) %>%
+          summarise(var1_n = sum(!is.na(!!sym(input$var1_n))),
+                    var2_n = sum(!is.na(!!sym(input$var2_n))),
+                    var3_n = sum(!is.na(!!sym(input$var3_n)))) %>%
+          setNames(c("Site Code", "Network", "Location Name", input$var1_n, input$var2_n, input$var3_n))
+      } else {
+        df <- tarball %>% group_by(site_code, network, location_name) %>%
+          summarise(var1_n = sum(!is.na(!!sym(input$var1_n))),
+                    var2_n = sum(!is.na(!!sym(input$var2_n))),
+                    var3_n = sum(!is.na(!!sym(input$var3_n))),
+                    var4_n = sum(!is.na(!!sym(input$var4_n)))) %>%
+          setNames(c("Site Code", "Network", "Location Name", input$var1_n, input$var2_n, input$var3_n, input$var3_n))
+      }
+      
+      #Remove row when all var_n columns are zero
+      if(input$var_ex.ALL == TRUE) {
+        df <- df[apply(df[c(4:ncol(df))],1,function(z) any(z!=0)),]
+      }
+      #remove row if any one of the var_n columns is zero
+      if(input$var_ex.ANY == TRUE) {
+        df <- df[apply(df[c(4:ncol(df))],1,function(z) !any(z==0)),] 
+      }
+
+      return(df)
+      })
+    
+    output$var_n_tbl = renderDT(
+      var_n.bysite(),
+      options = list(lengthChange = TRUE,
+                     pageLength = 200),
+      rownames= FALSE,
+      class = 'white-space: nowrap'
+    )
+
+    #Var n by site
   
+  ## Var info summary tables
+    # Location var info tbl
+    var_loc.tbl <- var.info %>% filter(Level == "location")
+    output$var_info.loc = renderDT(
+      var_loc.tbl,
+      options = list(lengthChange = TRUE,
+                     pageLength = 100),
+      rownames= FALSE,
+      class = 'white-space: nowrap'
+    )
   
-  
-  #Downloadable csv of selected dataset ----
+    # Profile var info tbl
+    var_prof.tbl <- var.info %>% filter(Level != "location")
+    output$var_info.prof = renderDT(
+      var_prof.tbl,
+      options = list(lengthChange = TRUE,
+                     pageLength = 200),
+      rownames= FALSE,
+      class = 'white-space: nowrap'
+    )
+    
+    
+### Downloadable csv of selected dataset ----
   output$downloadData <- downloadHandler(
     filename = function() {
       paste0("Filtered_SOM_data.csv")
@@ -219,77 +281,75 @@ server <- function(input, output, session) {
       write.csv(data.tbl(), file, row.names = FALSE)
     }
   )
-  
-  
-  
-  ### BEGIN Comment Box Objects ###
-
-  
-  # check if any of the issue fields are blank
-  any_null_issues <- reactive({
-    c(input$issueTitle, input$issueBody, input$email, input$name) %>%
-    lapply(function(x) x == "") %>%
-    Reduce(f = any, .)
-  })
-  
-  
-  # Create a github issue when someone clicks the issue button
-  observeEvent(input$issueSubmit, {
     
-    # if any of the fields are blank when they click submit, then we give them a message
-    if(any_null_issues()){
+    
+    ### BEGIN Comment Box Objects ###
+    
+    
+    # check if any of the issue fields are blank
+    any_null_issues <- reactive({
+      c(input$issueTitle, input$issueBody, input$email, input$name) %>%
+        lapply(function(x) x == "") %>%
+        Reduce(f = any, .)
+    })
+    
+    
+    # Create a github issue when someone clicks the issue button
+    observeEvent(input$issueSubmit, {
       
-      shinyjs::show("allIssues")
-      shinyjs::disable("issueSubmit")
-      
-    } else {
-      
-      # if all the fields are filled out, then submit the issue
-      
-      # put the text together into json format that the api likes
-      json_text <- toJSON(list(
-        title = input$issueTitle,
-        body = paste(paste0("Name:", input$name), 
-                     paste0("Email:", input$email), 
-                     input$issueBody
+      # if any of the fields are blank when they click submit, then we give them a message
+      if(any_null_issues()){
+        
+        shinyjs::show("allIssues")
+        shinyjs::disable("issueSubmit")
+        
+      } else {
+        
+        # if all the fields are filled out, then submit the issue
+        
+        # put the text together into json format that the api likes
+        json_text <- toJSON(list(
+          title = input$issueTitle,
+          body = paste(paste0("Name:", input$name), 
+                       paste0("Email:", input$email), 
+                       input$issueBody
+          )
+        ),
+        auto_unbox = TRUE
         )
-      ),
-      auto_unbox = TRUE
-      )
-      
-      # # send the issue to github
-      # issue <- httr::POST(issues_url, body = json_text, config = )
-      # 
-      # if(status_code(issue) == 201){
-      #   shinyjs::show("issueSuccess")
-      # }
-    }
-  })
-  
-  
-  # If all the fields are filled out, then hide the message
-  observe({
+        
+        # # send the issue to github
+        # issue <- httr::POST(issues_url, body = json_text, config = )
+        # 
+        # if(status_code(issue) == 201){
+        #   shinyjs::show("issueSuccess")
+        # }
+      }
+    })
     
-    if(!any_null_issues()){
-      
-      shinyjs::hide("allIssues")
-      shinyjs::enable("issueSubmit")
-      
-    }
-  })
-  
-  
-  
-  # Clear all inputs on press
-  observeEvent(input$clearIssue, {
-    c("issueTitle", "email", "name") %>%
-      lapply(function(x) updateTextInput(session = session, inputId = x, value = ""))
     
-    updateTextAreaInput(session, inputId = "issueBody", value = "")
-  })
-  
-  
-  
+    # If all the fields are filled out, then hide the message
+    observe({
+      
+      if(!any_null_issues()){
+        
+        shinyjs::hide("allIssues")
+        shinyjs::enable("issueSubmit")
+        
+      }
+    })
+    
+    
+    
+    # Clear all inputs on press
+    observeEvent(input$clearIssue, {
+      c("issueTitle", "email", "name") %>%
+        lapply(function(x) updateTextInput(session = session, inputId = x, value = ""))
+      
+      updateTextAreaInput(session, inputId = "issueBody", value = "")
+      
+    })
+    
+    
 }
-
 
