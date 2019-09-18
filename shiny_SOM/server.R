@@ -225,25 +225,26 @@ server <- function(input, output, session) {
   ### BEGIN Comment Box Objects ###
 
   
+  # check if any of the issue fields are blank
+  any_null_issues <- reactive({
+    c(input$issueTitle, input$issueBody, input$email, input$name) %>%
+    lapply(function(x) x == "") %>%
+    Reduce(f = any, .)
+  })
   
   
   # Create a github issue when someone clicks the issue button
-  observeEvent(input$issueButton, {
-    
-    # check if any of the fields are blank
-    any_null_issues <- c(input$issueTitle, input$issueBody, input$email, input$name) %>%
-      lapply(function(x) x == "") %>%
-      Reduce(f = any, .)
+  observeEvent(input$issueSubmit, {
     
     # if any of the fields are blank when they click submit, then we give them a message
-    if(any_null_issues){
+    if(any_null_issues()){
       
       shinyjs::show("allIssues")
+      shinyjs::disable("issueSubmit")
       
     } else {
-      # if all the fields are filled out, then hide the message and submit the issue
       
-      shinyjs::hide("allIssues")
+      # if all the fields are filled out, then submit the issue
       
       # put the text together into json format that the api likes
       json_text <- toJSON(list(
@@ -264,6 +265,19 @@ server <- function(input, output, session) {
       # }
     }
   })
+  
+  
+  # If all the fields are filled out, then hide the message
+  observe({
+    
+    if(!any_null_issues()){
+      
+      shinyjs::hide("allIssues")
+      shinyjs::enable("issueSubmit")
+      
+    }
+  })
+  
   
   
   # Clear all inputs on press

@@ -24,6 +24,7 @@ som.strings <-
 
 ### UI ###
 ui <- fluidPage(theme = "bootstrap.css",
+                useShinyjs(),
                 navbarPage(
                   "LTER SOM",
                   tabPanel(
@@ -177,14 +178,13 @@ ui <- fluidPage(theme = "bootstrap.css",
                                       DTOutput('site_sumry_tbl')),
                              tabPanel("By Analyte")
                            )),
-                  useShinyjs(),
                   tabPanel("Comments",
                            h1("Give us feedback on the app!"),
                            textInput("issueTitle", label = "Title"),
                            textAreaInput("issueBody", label = "Body", height = '300px'),
                            textInput("name", label = "Name:"),
                            textInput("email", label = "Email:"),
-                           actionButton("issueButton", label = "Submit"),
+                           actionButton("issueSubmit", label = "Submit"),
                            actionButton("clearIssue", label = "Clear All Fields"),
                            shinyjs::hidden(p(id = 'allIssues', 'Please fill out all values!',
                                              style = 'color: gray')),
