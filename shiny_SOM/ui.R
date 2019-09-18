@@ -167,17 +167,28 @@ ui <- fluidPage(theme = "bootstrap.css",
                   ),
                   tabPanel("Data Summary",
                            tabsetPanel(
-                             tabPanel("By Site", hr(),
-                                      selectInput(
-                                        'site.smry',
-                                        'Site:',
-                                        choices = site.names,
-                                        selected = ""
-                                      ), hr(),
-                                      DTOutput('site_sumry_tbl')),
+                             tabPanel(
+                               "By Site",
+                               hr(),
+                               selectInput('site.smry',
+                                           'Site:',
+                                           choices = site.names,
+                                           selected = ""),
+                               hr(),
+                               DTOutput('site_sumry_tbl')
+                             ),
                              tabPanel("By Analyte")
                            )),
                   tabPanel("Panel 3",
+                          tabsetPanel(
                            tabPanel("Panel 1.1"),
-                           tabPanel("Panel 1.2"))
+                           tabPanel("Panel 1.2")
+                           )),
+                  tabPanel("Data Key",
+                           tabsetPanel(
+                    tabPanel("Location",
+                             DTOutput('var_info.loc')),
+                    tabPanel("Profile",
+                             DTOutput('var_info.prof'))
+                  ))
                 ))

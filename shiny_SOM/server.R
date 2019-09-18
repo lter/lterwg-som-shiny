@@ -117,7 +117,7 @@ server <- function(input, output) {
   })
   
   
-### BEGIN MAP OBJECTS ###
+###MAP Object 
   #Create map dataframe with lat longs and other useful information
   map_pts <- reactive({
     
@@ -189,9 +189,9 @@ server <- function(input, output) {
       addScaleBar(position = "topright", options = scaleBarOptions(maxWidth = 100, metric = TRUE))
   })
   
-### BEGIN DataTable Objects ###
+### DataTable Objects 
   
-  #Create user filtered DataTable pulling dataframe from data.tbl() above
+  ## Create user filtered DataTable pulling dataframe from data.tbl() above
   output$tbl = renderDT(
     data.tbl(),
     options = list(lengthChange = TRUE,
@@ -200,17 +200,33 @@ server <- function(input, output) {
   )
   
 
-  #Site analyte summary table
-  output$site_sumry_tbl = renderDT(
-    data.tbl(),
-    options = list(lengthChange = TRUE,
-                   pageLength = 200),
-    class = 'white-space: nowrap'
-  )
+  ## Site analyte summary table
+
   
   
+  ## Var info summary tables
+    # Location var info tbl
+    var_loc.tbl <- var.info %>% filter(Level == "location")
+    output$var_info.loc = renderDT(
+      var_loc.tbl,
+      options = list(lengthChange = TRUE,
+                     pageLength = 100),
+      rownames= FALSE,
+      class = 'white-space: nowrap'
+    )
   
-  #Downloadable csv of selected dataset ----
+    # Profile var info tbl
+    var_prof.tbl <- var.info %>% filter(Level != "location")
+    output$var_info.prof = renderDT(
+      var_prof.tbl,
+      options = list(lengthChange = TRUE,
+                     pageLength = 200),
+      rownames= FALSE,
+      class = 'white-space: nowrap'
+    )
+    
+    
+### Downloadable csv of selected dataset ----
   output$downloadData <- downloadHandler(
     filename = function() {
       paste0("Filtered_SOM_data.csv")
