@@ -167,17 +167,71 @@ ui <- fluidPage(theme = "bootstrap.css",
                   ),
                   tabPanel("Data Summary",
                            tabsetPanel(
-                             tabPanel("By Site", hr(),
-                                      selectInput(
-                                        'site.smry',
-                                        'Site:',
-                                        choices = site.names,
-                                        selected = ""
-                                      ), hr(),
-                                      DTOutput('site_sumry_tbl')),
-                             tabPanel("By Analyte")
+                             tabPanel(
+                               "By Analytes",
+                               hr(),
+                               fluidRow(
+                                 column(
+                                   width = 3,
+                                   selectInput('var1_n',
+                                               'Analyte:',
+                                               choices = som.numerics,
+                                               selected = "lyr_soc")
+                                 ),
+                                 column(
+                                   width = 3,
+                                   selectInput(
+                                     'var2_n',
+                                     'Analyte:',
+                                     choices = c("", som.numerics),
+                                     selected = ""
+                                   )
+                                 ),
+                                 column(
+                                   width = 3,
+                                   selectInput(
+                                     'var3_n',
+                                     'Analyte:',
+                                     choices = c("", som.numerics),
+                                     selected = ""
+                                   )
+                                 ),
+                                 column(
+                                   width = 3,
+                                   selectInput(
+                                     'var4_n',
+                                     'Analyte:',
+                                     choices = c("", som.numerics),
+                                     selected = ""
+                                   )
+                                 ),
+                                 checkboxInput("var_ex.ALL", "Exclude if data missing for ALL variables", TRUE),
+                                 checkboxInput("var_ex.ANY", "Exclude if data missing for ANY variable", FALSE),
+                                 hr(),
+                                 DTOutput('var_n_tbl')
+                               )
+                             ),
+                             tabPanel(
+                               "By Site",
+                               hr(),
+                               selectInput('site.smry',
+                                           'Site:',
+                                           choices = site.names,
+                                           selected = ""),
+                               hr(),
+                               DTOutput('site_sumry_tbl')
+                             )
                            )),
                   tabPanel("Panel 3",
-                           tabPanel("Panel 1.1"),
-                           tabPanel("Panel 1.2"))
+                           tabsetPanel(
+                             tabPanel("Panel 1.1"),
+                             tabPanel("Panel 1.2")
+                           )),
+                  tabPanel("Data Key",
+                           tabsetPanel(
+                             tabPanel("Location",
+                                      DTOutput('var_info.loc')),
+                             tabPanel("Profile",
+                                      DTOutput('var_info.prof'))
+                           ))
                 ))
