@@ -308,22 +308,28 @@ server <- function(input, output, session) {
         # if all the fields are filled out, then submit the issue
         
         # put the text together into json format that the api likes
-        json_text <- toJSON(list(
-          title = input$issueTitle,
-          body = paste(paste0("Name:", input$name), 
-                       paste0("Email:", input$email), 
-                       input$issueBody
+        json_text <- toJSON(
+          list(
+            title = unbox(input$issueTitle),
+            body = unbox(
+              paste(paste0("Name:", input$name, "\n"), 
+                         paste0("Email:", input$email, "\n"), 
+                         input$issueBody
+                    )
+                  ),
+            labels = "shiny comment"
           )
-        ),
-        auto_unbox = TRUE
         )
-        
-        # # send the issue to github
-        # issue <- httr::POST(issues_url, body = json_text, config = )
-        # 
-        # if(status_code(issue) == 201){
-        #   shinyjs::show("issueSuccess")
-        # }
+
+        # send the issue to github. (user doesn't show up anywhere)
+        issue <- httr::POST(issues_url, 
+                            body = json_text, 
+                            config = authenticate(user = 'user', password = issue_token))
+
+        # show some confirmation text if the issue went through
+        if(status_code(issue) == 201){
+          shinyjs::show("issueSuccess")
+        } 
       }
     })
     

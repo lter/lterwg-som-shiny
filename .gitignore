@@ -35,3 +35,7 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 .Rproj.user
+
+
+# Shiny Machine User token
+machine_git_token.txt

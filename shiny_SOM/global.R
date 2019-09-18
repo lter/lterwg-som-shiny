@@ -7,6 +7,7 @@ library(viridis)
 
 library(httr) # to connect with github api for comments
 library(jsonlite) # to write issues into json
+library(readr) # to read the token into R
 
 library(shinyjs)
 
@@ -23,3 +24,6 @@ var.info <- read.csv("SOM_var_info.csv", as.is=T)
 
 # link to github api issues
 issues_url <- "https://api.github.com/repos/lter/lterwg-som-shiny/issues"
+
+# get the private issue token from local file
+issue_token <- readr::read_file('machine_git_token.txt')
