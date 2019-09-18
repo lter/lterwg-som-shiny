@@ -5,8 +5,6 @@ library(ggplot2)
 library(leaflet)
 library(viridis)
 
-
-
 # load tarball rds
 tarball <- readRDS("somCompositeData_2019-09-14.rds")
 
@@ -15,3 +13,7 @@ source('ext_ftns/control_filter.R', chdir=T)
 
 # load SOM var info csv
 var.info <- read.csv("SOM_var_info.csv", as.is=T)
+
+
+
+
