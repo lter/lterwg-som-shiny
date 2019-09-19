@@ -24,6 +24,7 @@ som.strings <-
 
 ### UI ###
 ui <- fluidPage(theme = "bootstrap.css",
+                useShinyjs(),
                 navbarPage(
                   "LTER SOM",
                   tabPanel(
@@ -103,7 +104,7 @@ ui <- fluidPage(theme = "bootstrap.css",
                             'plot.x',
                             'Plot X-Axis:',
                             choices = c(som.numerics, som.strings),
-                            selected = "location_name"
+                            selected = "google_dir"
                           ),
                           selectInput(
                             'plot.y',
@@ -208,11 +209,10 @@ ui <- fluidPage(theme = "bootstrap.css",
                                  checkboxInput("var_ex.ALL", "Exclude if data missing for ALL variables", TRUE),
                                  checkboxInput("var_ex.ANY", "Exclude if data missing for ANY variable", FALSE),
                                  hr(),
-                                 fluidRow(column(DTOutput('var_n_tbl'), width = 6))
+                                 DTOutput('var_n_tbl')
                                )
                              ),
-                             tabPanel(
-                               "By Site",
+                  tabPanel("By Site",
                                hr(),
                                selectInput('site.varn',
                                            'Site:',
@@ -225,16 +225,24 @@ ui <- fluidPage(theme = "bootstrap.css",
                                fluidRow(column(DTOutput('site_varn_tbl'), width = 8))
                              )
                            )),
-                  tabPanel("Panel 3",
-                           tabsetPanel(
-                             tabPanel("Panel 1.1"),
-                             tabPanel("Panel 1.2")
-                           )),
+                  tabPanel("Comments",
+                           h1("Give us feedback on the app!"),
+                           textInput("issueTitle", label = "Title"),
+                           textAreaInput("issueBody", label = "Body", height = '300px'),
+                           textInput("name", label = "Name:"),
+                           textInput("email", label = "Email:"),
+                           actionButton("issueSubmit", label = "Submit"),
+                           actionButton("clearIssue", label = "Clear All Fields"),
+                           shinyjs::hidden(p(id = 'allIssues', 'Please fill out all values!',
+                                             style = 'color: gray')),
+                           shinyjs::hidden(p(id = "issueSuccess", "Issue successfully submitted!",
+                                             style = "color: green"))
+                           ),
                   tabPanel("Data Key",
                            tabsetPanel(
                              tabPanel("Location",
-                                      fluidRow(column(DTOutput('var_info.loc'), width = 4))),
+                                      DTOutput('var_info.loc')),
                              tabPanel("Profile",
-                                      fluidRow(column(DTOutput('var_info.prof'), width = 4)))
+                                      DTOutput('var_info.prof'))
                            ))
                 ))

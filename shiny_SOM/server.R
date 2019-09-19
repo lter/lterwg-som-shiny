@@ -14,7 +14,7 @@ som.numerics <- colnames(as.data.frame(select_if(tarball, is.numeric)))
 som.strings <- colnames(as.data.frame(select_if(tarball, is.character)))
 
 ### SERVER ###
-server <- function(input, output) {
+server <- function(input, output, session) {
   #reactive function to create data table
   data.tbl <- reactive({
     df <- NULL
@@ -288,14 +288,8 @@ server <- function(input, output) {
                      pageLength = 200),
       rownames= TRUE,
       class = 'white-space: nowrap'
-    )    
-    
-    
-    
-    
-    
-    
-    
+    ) 
+                 
   ## Var info summary tables
     # Location var info tbl
     var_loc.tbl <- var.info %>% filter(Level == "location")
@@ -327,6 +321,78 @@ server <- function(input, output) {
       write.csv(data.tbl(), file, row.names = FALSE)
     }
   )
-}
+    
+    
+    ### BEGIN Comment Box Objects ###
+    
+    
+    # check if any of the issue fields are blank
+    any_null_issues <- reactive({
+      c(input$issueTitle, input$issueBody, input$email, input$name) %>%
+        lapply(function(x) x == "") %>%
+        Reduce(f = any, .)
+    })
+    
+    
+    # Create a github issue when someone clicks the issue button
+    observeEvent(input$issueSubmit, {
+      
+      # if any of the fields are blank when they click submit, then we give them a message
+      if(any_null_issues()){
+        
+        shinyjs::show("allIssues")
+        shinyjs::disable("issueSubmit")
+        
+      } else {
+        
+        # if all the fields are filled out, then submit the issue
+        
+        # put the text together into json format that the api likes
+        json_text <- toJSON(
+          list(
+            title = unbox(input$issueTitle),
+            body = unbox(
+              paste(paste0("Name:", input$name, "\n"), 
+                         paste0("Email:", input$email, "\n"), 
+                         input$issueBody
+                    )
+                  ),
+            labels = "shiny comment"
+          )
+        )
 
+        # send the issue to github. (user doesn't show up anywhere)
+        issue <- httr::POST(issues_url, 
+                            body = json_text, 
+                            config = authenticate(user = 'user', password = issue_token))
+
+        # show some confirmation text if the issue went through
+        if(status_code(issue) == 201){
+          shinyjs::show("issueSuccess")
+        } 
+      }
+    })
+    
+    
+    # If all the fields are filled out, then hide the message
+    observe({
+      
+      if(!any_null_issues()){
+        
+        shinyjs::hide("allIssues")
+        shinyjs::enable("issueSubmit")
+        
+      }
+    })
+    
+
+    # Clear all inputs on press
+    observeEvent(input$clearIssue, {
+      c("issueTitle", "email", "name") %>%
+        lapply(function(x) updateTextInput(session = session, inputId = x, value = ""))
+      
+      updateTextAreaInput(session, inputId = "issueBody", value = "")     
+    })
+  
+}
 
