@@ -45,7 +45,7 @@ ui <- fluidPage(
         "color:white"),
     #"LTER SOM Database",
     tabPanel(
-      "Filter-Plot-Map-Export",
+      "Query",
       fluidRow(column(
         12,
         offset = 0,
