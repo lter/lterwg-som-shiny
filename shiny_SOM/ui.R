@@ -218,8 +218,11 @@ ui <- fluidPage(theme = "bootstrap.css",
                                            'Site:',
                                            choices = site.names,
                                            selected = ""),
+                               checkboxInput("sitevar_ex.loc", "Exclude location level data", FALSE),
+                               checkboxInput("sitevar_ex.prof", "Exclude profile (layer, etc.) level data", FALSE),
+                               checkboxInput("sitevar_ex.class", "Exclude character class data", FALSE),
                                hr(),
-                               fluidRow(column(DTOutput('site_varn_tbl'), width = 6))
+                               fluidRow(column(DTOutput('site_varn_tbl'), width = 8))
                              )
                            )),
                   tabPanel("Panel 3",

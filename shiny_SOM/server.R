@@ -256,7 +256,28 @@ server <- function(input, output) {
       df.t <- as.data.frame(unlist(df[1,]), stringsAsFactors = F)
       colnames(df.t) <- c("Count")
       
-      df.t <- df.t %>% rownames_to_column('Item') %>% filter(Count != 0) %>% select(Item, Count)
+      df.t <- df.t %>% rownames_to_column('var') %>% filter(Count != 0) %>% select(var, Count)
+      
+      # Match up table var codes with full names and level 
+      
+      df.t <- df.t %>% inner_join(var.info, by=c("var" = "Column.Name")) %>% 
+        select(Variable.Name, var, Level, Class, Count) %>% 
+        setNames(c("Variable", "Column Name", "Level", "Class", "Count"))
+      
+      #Remove location data
+      if(input$sitevar_ex.loc == TRUE) {
+        df.t <- df.t %>% filter(Level != "location")
+      }
+      
+      #Remove profile data
+      if(input$sitevar_ex.prof == TRUE) {
+        df.t <- df.t %>% filter(Level == "location")
+      }
+      
+      #Exclude character class data
+      if(input$sitevar_ex.class == TRUE) {
+        df.t <- df.t %>% filter(Class != "character")
+      }
       
       return(df.t)
     })
