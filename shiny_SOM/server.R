@@ -249,7 +249,47 @@ server <- function(input, output, session) {
     )
 
     #Var n by site
-  
+    site.var_n <- reactive({
+        df <- tarball %>% group_by(location_name) %>% select_if(is.numeric) %>% summarise_all(funs(sum(!is.na(.)))) %>%
+          filter(location_name == input$site.varn)
+                                                                    
+      df.t <- as.data.frame(unlist(df[1,]), stringsAsFactors = F)
+      colnames(df.t) <- c("Count")
+      
+      df.t <- df.t %>% rownames_to_column('var') %>% filter(Count != 0) %>% select(var, Count)
+      
+      # Match up table var codes with full names and level 
+      
+      df.t <- df.t %>% inner_join(var.info, by=c("var" = "Column.Name")) %>% 
+        select(Variable.Name, var, Level, Class, Count) %>% 
+        setNames(c("Variable", "Column Name", "Level", "Class", "Count"))
+      
+      #Remove location data
+      if(input$sitevar_ex.loc == TRUE) {
+        df.t <- df.t %>% filter(Level != "location")
+      }
+      
+      #Remove profile data
+      if(input$sitevar_ex.prof == TRUE) {
+        df.t <- df.t %>% filter(Level == "location")
+      }
+      
+      #Exclude character class data
+      if(input$sitevar_ex.class == TRUE) {
+        df.t <- df.t %>% filter(Class != "character")
+      }
+      
+      return(df.t)
+    })
+
+    output$site_varn_tbl = renderDT(
+      site.var_n(),
+      options = list(lengthChange = TRUE,
+                     pageLength = 200),
+      rownames= TRUE,
+      class = 'white-space: nowrap'
+    ) 
+                 
   ## Var info summary tables
     # Location var info tbl
     var_loc.tbl <- var.info %>% filter(Level == "location")
@@ -345,17 +385,14 @@ server <- function(input, output, session) {
       }
     })
     
-    
-    
+
     # Clear all inputs on press
     observeEvent(input$clearIssue, {
       c("issueTitle", "email", "name") %>%
         lapply(function(x) updateTextInput(session = session, inputId = x, value = ""))
       
-      updateTextAreaInput(session, inputId = "issueBody", value = "")
-      
+      updateTextAreaInput(session, inputId = "issueBody", value = "")     
     })
-    
-    
+  
 }
 

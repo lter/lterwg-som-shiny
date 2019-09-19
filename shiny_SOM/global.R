@@ -4,6 +4,7 @@ library(dplyr)
 library(ggplot2)
 library(leaflet)
 library(viridis)
+library(tidyverse)
 
 library(httr) # to connect with github api for comments
 library(jsonlite) # to write issues into json
