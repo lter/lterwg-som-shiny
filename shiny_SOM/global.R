@@ -4,6 +4,7 @@ library(dplyr)
 library(ggplot2)
 library(leaflet)
 library(viridis)
+library(tidyverse)
 
 # load tarball rds
 tarball <- readRDS("somCompositeData_2019-09-14.rds")

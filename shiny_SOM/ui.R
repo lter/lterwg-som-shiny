@@ -103,7 +103,7 @@ ui <- fluidPage(theme = "bootstrap.css",
                             'plot.x',
                             'Plot X-Axis:',
                             choices = c(som.numerics, som.strings),
-                            selected = "google_dir"
+                            selected = "location_name"
                           ),
                           selectInput(
                             'plot.y',
@@ -208,18 +208,18 @@ ui <- fluidPage(theme = "bootstrap.css",
                                  checkboxInput("var_ex.ALL", "Exclude if data missing for ALL variables", TRUE),
                                  checkboxInput("var_ex.ANY", "Exclude if data missing for ANY variable", FALSE),
                                  hr(),
-                                 DTOutput('var_n_tbl')
+                                 fluidRow(column(DTOutput('var_n_tbl'), width = 6))
                                )
                              ),
                              tabPanel(
                                "By Site",
                                hr(),
-                               selectInput('site.smry',
+                               selectInput('site.varn',
                                            'Site:',
                                            choices = site.names,
                                            selected = ""),
                                hr(),
-                               DTOutput('site_sumry_tbl')
+                               fluidRow(column(DTOutput('site_varn_tbl'), width = 6))
                              )
                            )),
                   tabPanel("Panel 3",
@@ -230,8 +230,8 @@ ui <- fluidPage(theme = "bootstrap.css",
                   tabPanel("Data Key",
                            tabsetPanel(
                              tabPanel("Location",
-                                      DTOutput('var_info.loc')),
+                                      fluidRow(column(DTOutput('var_info.loc'), width = 4))),
                              tabPanel("Profile",
-                                      DTOutput('var_info.prof'))
+                                      fluidRow(column(DTOutput('var_info.prof'), width = 4)))
                            ))
                 ))
