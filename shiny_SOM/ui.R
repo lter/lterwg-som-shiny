@@ -40,21 +40,8 @@ ui <- fluidPage(
         
           ga('create', 'UA-148614327-1', 'auto');
           ga('send', 'pageview');
-        <!-- End Google Analytics -->
+       
         
-        
-        $(document).on('shiny:inputchanged', function(event) {
-        if (event.name === 'downloadData'){
-        ga('send', {                                        // tell GA that we want to send information out (fixed)
-        hitType: 'event',                                 // send info only if an event happens (fixed)
-        eventCategory: 'button',                          // what we want to call the type of object (any text we want)
-        eventAction: 'download',                          // what we want to call the type of interaction (any text we want)
-        eventLabel: 'full data'                           // More detailed description (optional) (any text we want)
-        // eventValue (int) if we want to add more granularity
-        });
-        }
-        
-        });
         </script>"
       )
   ),
@@ -203,7 +190,7 @@ ui <- fluidPage(
             condition = "input.conditionedPanels==3",
             h3("Data table"),
             hr(),
-            downloadButton("downloadData", "Download data")
+            downloadButton("downloadData", "Download data", onclick = "ga('send', 'event', 'click', 'download data')")
           )
         ),
         mainPanel(
