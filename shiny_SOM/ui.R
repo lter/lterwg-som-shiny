@@ -25,6 +25,42 @@ som.strings <-
 ### UI ###
 ui <- fluidPage(
   theme = "bootstrap.css",
+  # javascript code for google analytics. if app gets too big, we can move this to it's own script
+  # and use includeScript inside tags$head
+  tags$head(
+    HTML(
+      "
+                    <script async src=“https://www.googletagmanager.com/gtag/js?id=UA-148614327-1“></script>
+                    <script>
+                    // Google Analytics generated snippet -----------------------------
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag(‘js’, new Date());
+                    gtag(‘config’, ‘UA-148614327-1’);
+                    // -----------------------------------------------------------------
+                    
+                    
+            
+                    // track download button
+                  
+                    $(document).on('shiny:inputchanged', function(event) {
+                      if (event.name === 'downloadData'){
+                        ga('send', {                                        // tell GA that we want to send information out (fixed)
+                          hitType: 'event',                                 // send info only if an event happens (fixed)
+                          eventCategory: 'button',                          // what we want to call the type of object (any text we want)
+                          eventAction: 'download',                          // what we want to call the type of interaction (any text we want)
+                          eventLabel: 'full data'                           // More detailed description (optional) (any text we want)
+                          // eventValue (int) if we want to add more granularity
+                          });
+                      }
+                      
+                    });
+                  
+
+  
+                    </script>"
+    )
+  ),
   tags$style(
     HTML(
       "

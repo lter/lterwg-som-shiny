@@ -337,7 +337,7 @@ server <- function(input, output, session) {
     # Create a github issue when someone clicks the issue button
     observeEvent(input$issueSubmit, {
       
-      # if any of the fields are blank when they click submit, then we give them a message
+      # If any of the fields are blank when they click submit, then we give them a message and disable the button
       if(any_null_issues()){
         
         shinyjs::show("allIssues")
@@ -352,8 +352,8 @@ server <- function(input, output, session) {
           list(
             title = unbox(input$issueTitle),
             body = unbox(
-              paste(paste0("Name:", input$name, "\n"), 
-                         paste0("Email:", input$email, "\n"), 
+              paste(paste0("Name: ", input$name, "\n"), 
+                         paste0("Email: ", input$email, "\n"), 
                          input$issueBody
                     )
                   ),
@@ -361,7 +361,7 @@ server <- function(input, output, session) {
           )
         )
 
-        # send the issue to github. (user doesn't show up anywhere)
+        # send the issue to github. (user doesn't show up anywhere, but the parameter can't be NULL)
         issue <- httr::POST(issues_url, 
                             body = json_text, 
                             config = authenticate(user = 'user', password = issue_token))
