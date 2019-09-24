@@ -24,12 +24,12 @@ som.strings <-
 
 ### UI ###
 ui <- fluidPage(
-  theme = "bootstrap.css",
   # javascript code for google analytics. if app gets too big, we can move this to it's own script
   # and use includeScript inside tags$head
   tags$head(
-    includeHTML(("google-analytics.html"))
+    shiny::includeHTML("google-analytics.html")
   ),
+  theme = "bootstrap.css",
   tags$style(
     HTML(
       "
