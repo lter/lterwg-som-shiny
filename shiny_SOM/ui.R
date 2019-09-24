@@ -27,7 +27,44 @@ ui <- fluidPage(
   # javascript code for google analytics. if app gets too big, we can move this to it's own script
   # and use includeScript inside tags$head
   tags$head(
-    shiny::includeHTML("google-analytics.html")
+    #shiny::includeHTML("google-analytics.html")
+    # javascript code for google analytics. if app gets too big, we can move this to it's own script
+    # and use includeScript inside tags$head
+      HTML(
+        "
+        <!-- Google Analytics -->
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+        
+          ga('create', 'UA-148614327-1', 'auto');
+          ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+        
+        
+        
+        // track download button
+        
+        $(document).on('shiny:inputchanged', function(event) {
+        if (event.name === 'downloadData'){
+        ga('send', {                                        // tell GA that we want to send information out (fixed)
+        hitType: 'event',                                 // send info only if an event happens (fixed)
+        eventCategory: 'button',                          // what we want to call the type of object (any text we want)
+        eventAction: 'download',                          // what we want to call the type of interaction (any text we want)
+        eventLabel: 'full data'                           // More detailed description (optional) (any text we want)
+        // eventValue (int) if we want to add more granularity
+        });
+        }
+        
+        });
+        
+        
+        
+        </script>"
+      )
   ),
   theme = "bootstrap.css",
   tags$style(
