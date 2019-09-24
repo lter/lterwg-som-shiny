@@ -29,19 +29,14 @@ ui <- fluidPage(theme = "bootstrap.css",
                   # and use includeScript inside tags$head
                 tags$head(
                   HTML(
-                    "<script> 
-              
+                    "
+                    <script async src=“https://www.googletagmanager.com/gtag/js?id=UA-148614327-1“></script>
+                    <script>
                     // Google Analytics generated snippet -----------------------------
-                    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();
-                      a=s.createElement(o), m=s.getElementsByTagName(o)[0];
-                      a.async=1;
-                      a.src=g;m.parentNode.insertBefore(a,m)
-                    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-                    
-                    // track page views
-                    ga('create', 'UA-54514964-1', 'auto');
-                    ga('send', 'pageview');
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag(‘js’, new Date());
+                    gtag(‘config’, ‘UA-148614327-1’);
                     // -----------------------------------------------------------------
                     
                     
