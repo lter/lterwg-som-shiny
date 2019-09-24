@@ -30,18 +30,21 @@ ui <- fluidPage(
   tags$head(
     HTML(
       "
+                   <!-- Global site tag (gtag.js) - Google Analytics -->
                     <script async src=“https://www.googletagmanager.com/gtag/js?id=UA-148614327-1“></script>
-                    <script>
-                    // Google Analytics generated snippet -----------------------------
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){dataLayer.push(arguments);}
-                    gtag(‘js’, new Date());
-                    gtag(‘config’, ‘UA-148614327-1’);
-                    // -----------------------------------------------------------------
+                   <script>
+                     window.dataLayer = window.dataLayer || [];
+                      function gtag(){dataLayer.push(arguments);}
+                      gtag(‘js’, new Date());
+                      gtag(‘config’, ‘UA-148614327-1’);
+                    </script>
+
+                        // -----------------------------------------------------------------
                     
                     
             
                     // track download button
+                    <script>
                   
                     $(document).on('shiny:inputchanged', function(event) {
                       if (event.name === 'downloadData'){
