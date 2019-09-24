@@ -31,8 +31,7 @@ ui <- fluidPage(
     # javascript code for google analytics. if app gets too big, we can move this to it's own script
     # and use includeScript inside tags$head
       HTML(
-        "
-        <!-- Google Analytics -->
+        "<!-- Google Analytics -->
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
           (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -41,12 +40,8 @@ ui <- fluidPage(
         
           ga('create', 'UA-148614327-1', 'auto');
           ga('send', 'pageview');
-        </script>
         <!-- End Google Analytics -->
         
-        
-        
-        // track download button
         
         $(document).on('shiny:inputchanged', function(event) {
         if (event.name === 'downloadData'){
@@ -60,9 +55,6 @@ ui <- fluidPage(
         }
         
         });
-        
-        
-        
         </script>"
       )
   ),
