@@ -20,7 +20,7 @@ tarball <- readRDS("somCompositeData_2019-09-23.rds")
 source('ext_ftns/control_filter.R', chdir=T)
 
 # load SOM var info csv
-var.info <- read.csv("SOM_var_info.csv", as.is=T)
+var.info <- read.csv("SOM_data_key.csv", as.is=T)
 
 
 # link to github api issues
