@@ -198,9 +198,8 @@ server <- function(input, output, session) {
                    pageLength = 10),
     class = 'white-space: nowrap'
   )
-  
 
-  ## Tarball summary tables
+    ## Tarball summary tables
     #Sites with var1, var1, var,3
     var_n.bysite <- reactive({
 
@@ -289,6 +288,31 @@ server <- function(input, output, session) {
       rownames= TRUE,
       class = 'white-space: nowrap'
     ) 
+    
+  #Notes PDF file popup   
+    #Notes - find PDF file using site name
+    site.dir <- reactive({
+      df <- tarball %>% filter(location_name == input$site.varn)
+      dir <- unique(df$google_dir)
+      return(dir)
+    })
+    
+    #Open Notes PDF on click
+    onclick("site_notes", 
+            for(dir.i in 1:length(site.dir()))
+              {
+              runjs(paste0("window.open('/HMGZD_notes/",site.dir()[dir.i],"_HMGZD_NOTES.pdf')"))
+              }
+            )
+    
+    #Open QC html on click
+    onclick("site_qc", 
+            for(dir.i in 1:length(site.dir()))
+            {
+              runjs(paste0("window.open('/HMGZD_qc/",site.dir()[dir.i],"_HMGZD_QC.html')"))
+            }
+    )
+     
                  
   ## Var info summary tables
     # Location var info tbl
