@@ -301,7 +301,7 @@ server <- function(input, output, session) {
     onclick("site_notes", 
             for(dir.i in 1:length(site.dir()))
               {
-              runjs(paste0("window.open('lter-som/HMGZD_notes/",site.dir()[dir.i],"_HMGZD_NOTES.pdf')"))
+              runjs(paste0("window.open('www/HMGZD_notes/",site.dir()[dir.i],"_HMGZD_NOTES.pdf')"))
               #runjs(paste0("window.open('http://google.com', '_blank')"))
               }
             )
