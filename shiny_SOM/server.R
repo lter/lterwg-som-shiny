@@ -289,7 +289,7 @@ server <- function(input, output, session) {
       class = 'white-space: nowrap'
     ) 
     
-  #Notes PDF file popup   
+  #soilHarmonization file popups  !!!Note: this functionality does not work locally, paths are set for use on Cosima server  
     #Notes - find PDF file using site name
     site.dir <- reactive({
       df <- tarball %>% filter(location_name == input$site.varn)
@@ -302,7 +302,6 @@ server <- function(input, output, session) {
             for(dir.i in 1:length(site.dir()))
               {
               runjs(paste0("window.open('/lter-som/HMGZD_notes/",site.dir()[dir.i],"_HMGZD_NOTES.pdf')"))
-              #runjs(paste0("window.open('http://google.com', '_blank')"))
               }
             )
     
