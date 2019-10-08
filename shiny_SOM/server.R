@@ -310,7 +310,7 @@ server <- function(input, output, session) {
     onclick("site_qc", 
             for(dir.i in 1:length(site.dir()))
             {
-              runjs(paste0("window.open('lter-som/HMGZD_qc/",site.dir()[dir.i],"_HMGZD_QC.html')"))
+              runjs(paste0("window.open('/HMGZD_qc/",site.dir()[dir.i],"_HMGZD_QC.html')"))
             }
     )
      
