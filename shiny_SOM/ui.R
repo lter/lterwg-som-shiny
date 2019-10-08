@@ -263,11 +263,11 @@ ui <- fluidPage(
                        checkboxInput("sitevar_ex.prof","Exclude profile (layer, etc.) level data",FALSE),
                        checkboxInput("sitevar_ex.class", "Exclude character class data", FALSE)
                    ),
+                   #column(
+                    # width = 0.2),
                    column(
-                     width = 1),
-                   column(
-                     width = 6,
-                     style = "background-color: lightsteelblue;",
+                     width = 5,
+                     style = "background-color: lightgray;",
                      h3("Harmonization Documents"),
                      h5("The site notes and quality control documents linked below provide information 
                         pertaining to the structure and homogenization of the raw data for each site."),
