@@ -267,13 +267,14 @@ ui <- fluidPage(
                      width = 1),
                    column(
                      width = 6,
-                     h3("Documentation"),
+                     style = "background-color: lightsteelblue;",
+                     h3("Harmonization Documents"),
                      h5("The site notes and quality control documents linked below provide information 
-                        pertaining to the structure and homogenization of the raw data from each site."),
+                        pertaining to the structure and homogenization of the raw data for each site."),
                      useShinyjs(),
                      actionButton("site_notes", "Notes (PDF)"),
                      actionButton("site_qc", "Quality Control (html)"),
-                     h6("NOTE: Ensure pop-up tabs are allowed by your browser. Further, some browsers require 
+                     h5("NOTE: Ensure pop-up tabs are allowed by your browser. Further, some browsers require 
                         additional authorization for apps to open more than one tab. Sites with multiple raw 
                         datasets will open multiple Notes PDF files."),
                      h6("NOTE: QC summaries NOT available for all sites (Work in progress...)")
