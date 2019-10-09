@@ -115,18 +115,24 @@ ui <- fluidPage(
                wellPanel(
                  sliderInput(
                    "top_d",
-                   "Min soil depth:",
+                   "Top depth of soil layer (cm):",
                    min = -3,
                    max = 300,
                    value = c(-3,300)
                  ),
                  sliderInput(
                    "bot_d",
-                   "Max soil depth:",
+                   "Bottom depth of soil layer (cm):",
                    min = -3,
                    max = 300,
                    value = c(-3,300)
-                 )
+                 ),
+                 hr(),
+                 h5("Sliders expanded to their full range will include all available data.", 
+                    style="color:#85929E"),
+                 h5("To filter data by an exact soil layer (e.g. 0-10 cm), move sliders to overlap 
+                    on a single value (e.g. Top = 0, Bottom = 10)", 
+                    style="color:#85929E")
                ))
       ),
       hr(),
