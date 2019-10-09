@@ -62,15 +62,14 @@ ui <- fluidPage(
     ),
   useShinyjs(),
   navbarPage(
-    a("LTER SOM", href = "https://lter.github.io/som-website/", style =
-        "color:white"),
-    #"LTER SOM Database",
+    a("LTER SOM", href = "https://lter.github.io/som-website/",  style = "color:white"),
+    windowTitle = "LTER SOM Database",
     tabPanel(
       "Query",
       fluidRow(column(
         12,
         offset = 0,
-        titlePanel(title = "LTER SOM Database", windowTitle = "LTER SOM Database")
+        titlePanel(title = "LTER SOM Database")
       )),
       hr(),
       h2("Filters"),
@@ -112,21 +111,21 @@ ui <- fluidPage(
                    selected = "ALL"
                  )
                )),
-        column(3,
+        column(5,
                wellPanel(
                  sliderInput(
                    "top_d",
                    "Min soil depth:",
-                   min = 0,
-                   max = 100,
-                   value = 0
+                   min = -3,
+                   max = 300,
+                   value = c(-3,300)
                  ),
                  sliderInput(
                    "bot_d",
                    "Max soil depth:",
-                   min = 0,
+                   min = -3,
                    max = 300,
-                   value = 300
+                   value = c(-3,300)
                  )
                ))
       ),
