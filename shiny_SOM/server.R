@@ -46,15 +46,17 @@ server <- function(input, output, session) {
     }
     
     #Top depth filter
-    if (input$top_d != "0") {
+    if (input$top_d[1] != "-3" || input$top_d[2] != "300") {
       df <- df %>% mutate(layer_top = as.numeric(layer_top)) %>% 
-        filter(layer_top >= as.numeric(input$top_d)) 
+        filter(layer_top >= as.numeric(input$top_d[1])) %>% 
+        filter(layer_top <= as.numeric(input$top_d[2]))  
     }
     
     #Bottom depth filter
-    if (input$bot_d != "300") {
+    if (input$bot_d[1] != "-3" || input$bot_d[2] != "300") {
       df <- df %>% mutate(layer_bot = as.numeric(layer_bot)) %>% 
-            filter(layer_bot <= as.numeric(input$bot_d)) 
+        filter(layer_bot >= as.numeric(input$bot_d[1])) %>% 
+        filter(layer_bot <= as.numeric(input$bot_d[2]))  
     }
     
     ## Return the filtered dataframe
