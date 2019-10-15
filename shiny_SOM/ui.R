@@ -12,8 +12,10 @@ networks <- unique(tarball$network)
 #List of site names
 site.names <- sort(unique(tarball$location_name))
 
-
-# create vectors of tarball numeric and string column names for plotting options
+# create vectors of tarball numeric and string column names for plotting
+# options; this code is duplicated in both the ui and server functions as the
+# map function needs these values from server whereas the rest of the map needs
+# these from ui
 som.numerics <- select_if(tarball, is.numeric) %>% colnames() %>% sort()
 som.strings <- select_if(tarball, is.character) %>% colnames() %>% sort()
 
