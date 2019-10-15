@@ -7,9 +7,12 @@
 # exp.types <- unique(tarball$tx_L1_level) #How to remove unwanted otpions? e.g. NA, L1
 # networks <- unique(tarball$network)
 
-#Create plot variable options vector
-# som.numerics <- colnames(as.data.frame(select_if(tarball, is.numeric)))
-# som.strings <- colnames(as.data.frame(select_if(tarball, is.character)))
+# create vectors of tarball numeric and string column names for plotting
+# options; this code is duplicated in both the ui and server functions as the
+# map function needs these values from server whereas the rest of the map needs
+# these from ui
+som.numerics <- select_if(tarball, is.numeric) %>% colnames() %>% sort()
+som.strings <- select_if(tarball, is.character) %>% colnames() %>% sort()
 
 ### SERVER ###
 server <- function(input, output, session) {
