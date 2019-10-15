@@ -6,21 +6,16 @@
 ### BRING IN BETTER VAR NAMES, create lookup table csv from keykey to convert colummn names to full names
 
 #Create UI option vectors
-exp.types <-
-  unique(tarball$tx_L1_level) #How to remove unwanted otpions? e.g. NA, L1
+exp.types <- unique(na.omit(tarball$tx_L1_level))
 networks <- unique(tarball$network)
 
 #List of site names
 site.names <- sort(unique(tarball$location_name))
 
 
-#Create plot variable options vector
-som.numerics <-
-  sort(colnames(as.data.frame(select_if(tarball, is.numeric))))
-som.strings <-
-  sort(colnames(as.data.frame(select_if(
-    tarball, is.character
-  ))))
+# create vectors of tarball numeric and string column names for plotting options
+som.numerics <- select_if(tarball, is.numeric) %>% colnames() %>% sort()
+som.strings <- select_if(tarball, is.character) %>% colnames() %>% sort()
 
 ### UI ###
 ui <- fluidPage(
@@ -30,8 +25,8 @@ ui <- fluidPage(
     #shiny::includeHTML("google-analytics.html")
     # javascript code for google analytics. if app gets too big, we can move this to it's own script
     # and use includeScript inside tags$head
-      HTML(
-        "<!-- Google Analytics -->
+    HTML(
+      "<!-- Google Analytics -->
         <script>
           (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
           (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -43,7 +38,7 @@ ui <- fluidPage(
        
         
         </script>"
-      )
+    )
   ),
   theme = "bootstrap.css",
   tags$style(
@@ -59,7 +54,7 @@ ui <- fluidPage(
       .navbar-default .navbar-nav > li > a:hover {color: white;background-color:#222222;font-size: 17px;}
       "
     )
-    ),
+  ),
   useShinyjs(),
   navbarPage(
     a("LTER SOM", href = "https://lter.github.io/som-website/",  style = "color:white"),
@@ -143,13 +138,13 @@ ui <- fluidPage(
             condition = "input.conditionedPanels==1",
             h3("Plot variables"),
             selectInput(
-              'plot.x',
-              'Plot X-Axis:',
+              inputId = 'plot.x',
+              label = 'Plot X-Axis:',
               choices = c(som.numerics, som.strings),
               selected = "google_dir"
             ),
             selectInput(
-              'plot.y',
+              inputId = 'plot.y',
               'Plot Y-Axis:',
               choices = c(som.numerics, som.strings),
               selected = "lyr_soc"
@@ -157,13 +152,13 @@ ui <- fluidPage(
             hr(),
             h3("Plot options"),
             selectInput(
-              'plot.type',
+              inputId = 'plot.type',
               'Type:',
               choices = c("point", "boxplot", "histogram"),
               selected = "point"
             ),
             selectInput(
-              'plot.color',
+              inputId = 'plot.color',
               'Color:',
               choices = c("None", som.numerics, som.strings),
               selected = "None"
@@ -260,16 +255,16 @@ ui <- fluidPage(
                  fluidRow(
                    column(
                      width = 3,
-                       selectInput('site.varn',
-                                   'Site:',
-                                   choices = site.names,
-                                   selected = ""),
-                       checkboxInput("sitevar_ex.loc", "Exclude location level data", FALSE),
-                       checkboxInput("sitevar_ex.prof","Exclude profile (layer, etc.) level data",FALSE),
-                       checkboxInput("sitevar_ex.class", "Exclude character class data", FALSE)
+                     selectInput('site.varn',
+                                 'Site:',
+                                 choices = site.names,
+                                 selected = ""),
+                     checkboxInput("sitevar_ex.loc", "Exclude location level data", FALSE),
+                     checkboxInput("sitevar_ex.prof","Exclude profile (layer, etc.) level data",FALSE),
+                     checkboxInput("sitevar_ex.class", "Exclude character class data", FALSE)
                    ),
                    #column(
-                    # width = 0.2),
+                   # width = 0.2),
                    column(
                      width = 5,
                      style = "background-color: lightgray;",
@@ -283,7 +278,7 @@ ui <- fluidPage(
                         additional authorization for apps to open more than one tab. Sites with multiple raw 
                         datasets will open multiple Notes PDF files."),
                      h6("NOTE: QC summaries NOT available for all sites (Work in progress...)")
-                     )
+                   )
                  ),
                  hr(),
                  fluidRow(column(DTOutput('site_varn_tbl'), width = 8))
@@ -319,4 +314,4 @@ ui <- fluidPage(
     )
     
   )
-    )
+)
