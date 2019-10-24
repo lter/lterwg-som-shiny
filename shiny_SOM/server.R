@@ -30,8 +30,9 @@ server <- function(input, output, session) {
     
     #Control only filter
     if (input$ctl != "ALL") {
-      dsets <- na.omit(as.character(unique(df$google_dir)))
-      df <- do.call(rbind, lapply(dsets, ctl_filter, df))
+      df <- df %>% filter(control_sample == TRUE)
+      # dsets <- na.omit(as.character(unique(df$google_dir)))
+      # df <- do.call(rbind, lapply(dsets, ctl_filter, df))
     }
     
     #Time series filter
@@ -89,9 +90,9 @@ server <- function(input, output, session) {
     updateSelectInput(session,
                       inputId = "plot.y",
                       choices = data.tbl() %>% colnames() %>% sort(),
-                      selected = "google_dir")
+                      selected = data.tbl() %>% colnames() %>% sort() %>% first())
+                      # selected = "google_dir")
                       # change selected to below pending future tarball that fixes `^bd_`
-                      # selected = data.tbl() %>% colnames() %>% sort() %>% first())
     
     updateSelectInput(session,
                       inputId = "plot.color",

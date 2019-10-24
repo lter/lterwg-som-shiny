@@ -17,7 +17,7 @@ library(shinyjs)
 tarball <- readRDS("somCompositeData_2019-10-24.rds")
 
 # load control only function
-source('ext_ftns/control_filter.R', chdir=T)
+# source('ext_ftns/control_filter.R', chdir=T)
 
 # load SOM var info csv
 var.info <- read.csv("SOM_data_key.csv", as.is=T)
