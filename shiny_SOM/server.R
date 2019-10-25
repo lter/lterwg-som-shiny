@@ -91,8 +91,8 @@ server <- function(input, output, session) {
                       inputId = "plot.y",
                       choices = data.tbl() %>% colnames() %>% sort(),
                       selected = data.tbl() %>% colnames() %>% sort() %>% first())
-                      # selected = "google_dir")
-                      # change selected to below pending future tarball that fixes `^bd_`
+    # selected = "google_dir")
+    # change selected to below pending future tarball that fixes `^bd_`
     
     updateSelectInput(session,
                       inputId = "plot.color",
@@ -157,7 +157,8 @@ server <- function(input, output, session) {
   })
   
   
-  ###MAP Object 
+  # map ---------------------------------------------------------------------
+  
   #Create map dataframe with lat longs and other useful information
   map_pts <- reactive({
     
@@ -175,6 +176,7 @@ server <- function(input, output, session) {
     df <- df[!duplicated(df[,c('lat','long')]),]
     
     return(df)
+    
   })
   
   
@@ -376,7 +378,8 @@ server <- function(input, output, session) {
   )
   
   
-  ### Downloadable csv of selected dataset ----
+  # data download -----------------------------------------------------------
+  
   output$downloadData <- downloadHandler(
     filename = function() {
       paste0("Filtered_SOM_data.csv")
@@ -387,7 +390,7 @@ server <- function(input, output, session) {
   )
   
   
-# comments (as GitHub issue) ----------------------------------------------
+  # comments (as GitHub issue) ----------------------------------------------
   
   # check if any of the issue fields are blank
   any_null_issues <- reactive({
@@ -456,6 +459,9 @@ server <- function(input, output, session) {
     
     updateTextAreaInput(session, inputId = "issueBody", value = "")     
   })
+  
+  
+  # close the server function -----------------------------------------------
   
 } # close server
 

@@ -69,6 +69,10 @@ ui <- fluidPage(
         titlePanel(title = "LTER SOM Database")
       )),
       hr(),
+      
+      
+      # data filters ------------------------------------------------------------
+      
       h2("Filters"),
       fluidRow(
         column(3,
@@ -136,6 +140,10 @@ ui <- fluidPage(
       pageWithSidebar(
         h2("Output"),
         sidebarPanel(
+          
+          
+          # plot data controls ------------------------------------------------------
+          
           conditionalPanel(
             condition = "input.conditionedPanels==1",
             h3("Plot variables"),
@@ -172,6 +180,10 @@ ui <- fluidPage(
               selected = "None"
             )
           ),
+          
+          
+          # map data controls -------------------------------------------------------
+          
           conditionalPanel(
             condition = "input.conditionedPanels==2",
             h3("Map options"),
@@ -188,6 +200,10 @@ ui <- fluidPage(
               selected = "lyr_soc"
             )
           ),
+          
+          
+          # download data button ----------------------------------------------------
+          
           conditionalPanel(
             condition = "input.conditionedPanels==3",
             h3("Data table"),
@@ -195,6 +211,10 @@ ui <- fluidPage(
             downloadButton("downloadData", "Download data", onclick = "ga('send', 'event', 'click', 'download data')")
           )
         ),
+        
+        
+        # query main panel --------------------------------------------------------
+        
         mainPanel(
           tabsetPanel(
             tabPanel("Plot", value = 1, plotOutput("dataPlot")),
@@ -205,6 +225,10 @@ ui <- fluidPage(
         )
       )
     ),
+    
+    
+    # data summary ------------------------------------------------------------
+    
     tabPanel("Data Summary",
              tabsetPanel(
                tabPanel(
@@ -293,6 +317,10 @@ ui <- fluidPage(
                tabPanel("Profile",
                         DTOutput('var_info.prof'))
              )),
+    
+    
+    # comments via GitHub -----------------------------------------------------
+    
     tabPanel(
       "Comments",
       h1("Give us feedback on the app!"),
