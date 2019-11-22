@@ -90,9 +90,7 @@ server <- function(input, output, session) {
     updateSelectInput(session,
                       inputId = "plot.y",
                       choices = data.tbl() %>% colnames() %>% sort(),
-                      selected = data.tbl() %>% colnames() %>% sort() %>% first())
-    # selected = "google_dir")
-    # change selected to below pending future tarball that fixes `^bd_`
+                      selected = "google_dir")
     
     updateSelectInput(session,
                       inputId = "plot.color",
@@ -102,10 +100,11 @@ server <- function(input, output, session) {
   })
   
   
-  #Create plot df, select columns and remove NA before plotting
+  # create plot df and select columns
   plot.df <- reactive({
     
-    #Select data columns and remove NA
+    # select data columns and remove NA
+    # the call to remove NA was removing desired data, and was omitted
     df <- data.tbl() %>%
       select(
         "google_dir",
@@ -117,10 +116,8 @@ server <- function(input, output, session) {
         input$plot.y,
         {if(input$plot.color != "None")input$plot.color},
         {if(input$plot.symbol != "None")input$plot.symbol}
-      ) %>%
-      na.omit(input$plot.x, input$plot.y)
+      )
     
-    #Return two column df
     return(df)
     
   })
