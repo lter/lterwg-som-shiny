@@ -14,7 +14,7 @@ library(shinyjs)
 
 
 # load tarball rds
-tarball <- readRDS("somCompositeData_2019-11-23.rds")
+tarball <- readRDS("somCompositeData_2020-02-11.rds")
 
 # load control only function
 # source('ext_ftns/control_filter.R', chdir=T)
