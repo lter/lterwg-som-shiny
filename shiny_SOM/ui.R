@@ -6,7 +6,15 @@
 ### BRING IN BETTER VAR NAMES, create lookup table csv from keykey to convert colummn names to full names
 
 #Create UI option vectors
-exp.types <- unique(na.omit(tarball$tx_L1_level))
+exp.types <- c(unique(na.omit(tarball$tx_L1_level)), 
+               unique(na.omit(tarball$tx_L2_level)),
+               unique(na.omit(tarball$tx_L3_level)),
+               unique(na.omit(tarball$tx_L4_level)),
+               unique(na.omit(tarball$tx_L5_level)),
+               unique(na.omit(tarball$tx_L6_level))
+               )
+exp.types <- union(exp.types,exp.types) #removes duplicates from the vector
+
 networks <- unique(tarball$network)
 
 #List of site names

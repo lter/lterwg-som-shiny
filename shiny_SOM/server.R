@@ -45,7 +45,13 @@ server <- function(input, output, session) {
     
     #Experiment filter
     if (input$exptype != "ALL") {
-      df <- df %>% filter(tx_L1_level == input$exptype) ### NEEDS TO FILTER ACROSS THE OTHER LEVELS
+      df <- df %>% filter(experiments == 'YES') %>% 
+        filter(tx_L1_level == input$exptype | 
+               tx_L2_level == input$exptype | 
+               tx_L3_level == input$exptype | 
+               tx_L2_level == input$exptype | 
+               tx_L3_level == input$exptype | 
+               tx_L4_level == input$exptype)
     }
     
     #Top depth filter
