@@ -351,5 +351,12 @@ ui <- fluidPage(
       )
     )
     
+  ),
+### app versioning ###
+# Last updated on commit by Derek Pierson: April 21, 2020
+  column(
+    width = 12,
+    style = "text-align: right; color:grey; font-size: 9px; padding-top: 10px;",
+    p("Shiny SoDaH Version: 1.06")
   )
 )
