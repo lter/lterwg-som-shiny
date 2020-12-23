@@ -296,7 +296,7 @@ ui <- fluidPage(
                      checkboxInput("sitevar_ex.loc", "Exclude location level data", FALSE),
                      checkboxInput("sitevar_ex.prof","Exclude profile (layer, etc.) level data",FALSE),
                      checkboxInput("sitevar_ex.class", "Exclude character class data", FALSE)
-                   ),
+                   )
                    #column(
                    # width = 0.2),
                  ),
