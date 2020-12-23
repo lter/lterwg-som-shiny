@@ -296,23 +296,9 @@ ui <- fluidPage(
                      checkboxInput("sitevar_ex.loc", "Exclude location level data", FALSE),
                      checkboxInput("sitevar_ex.prof","Exclude profile (layer, etc.) level data",FALSE),
                      checkboxInput("sitevar_ex.class", "Exclude character class data", FALSE)
-                   ),
+                   )
                    #column(
                    # width = 0.2),
-                   column(
-                     width = 5,
-                     style = "background-color: lightgray;",
-                     h3("Harmonization Documents"),
-                     h5("The site notes and quality control documents linked below provide information 
-                        pertaining to the structure and homogenization of the raw data for each site."),
-                     useShinyjs(),
-                     actionButton("site_notes", "Notes (PDF)"),
-                     actionButton("site_qc", "Quality Control (html)"),
-                     h5("NOTE: Ensure pop-up tabs are allowed by your browser. Further, some browsers require 
-                        additional authorization for apps to open more than one tab. Sites with multiple raw 
-                        datasets will open multiple Notes PDF files."),
-                     h6("NOTE: QC summaries NOT available for all sites (Work in progress...)")
-                   )
                  ),
                  hr(),
                  fluidRow(column(DTOutput('site_varn_tbl'), width = 8))
